@@ -40,6 +40,7 @@ public class STModel {
             put("Byte", null);
             put("Short", null);
             put("Char", null);
+            put("Object", null);
         }};
     private static Map<String, String> RENAME = new HashMap<String, String>(){{
             put("Int", "Integer");
@@ -124,7 +125,7 @@ public class STModel {
     }
 
     public boolean isObjectType() {
-        return typeEntry.getDefinition() instanceof ObjectTypeDefinition;
+        return typeEntry.getDefinition() instanceof ObjectTypeDefinition && !getName().equalsIgnoreCase("query") && !getName().equalsIgnoreCase("mutation");
     }
 
     public boolean isInterfaceType() {
@@ -153,6 +154,10 @@ public class STModel {
 
     public String getPackageName() {
         return typeEntry.getPackageName();
+    }
+    
+    public String getImplemntingInterface() {
+    	return typeEntry.getImpls();
     }
 
     public String getName() {

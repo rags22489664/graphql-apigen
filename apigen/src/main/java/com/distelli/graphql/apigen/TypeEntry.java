@@ -20,11 +20,13 @@ public class TypeEntry {
     private URL source;
     private Definition definition;
     private String packageName;
+    private String impls;
 
     public TypeEntry(Definition definition, URL source, String defaultPackageName) {
         this.source = source;
         this.definition = definition;
         this.packageName = getPackageName(getDirectives(definition), defaultPackageName);
+        this.impls = getImplements(getDirectives(definition));
     }
 
     public URL getSource() {
@@ -39,6 +41,10 @@ public class TypeEntry {
 
     public String getPackageName() {
         return packageName;
+    }
+    
+    public String getImpls() {
+    	return impls;
     }
 
     public String getName() {
@@ -92,6 +98,20 @@ public class TypeEntry {
             break;
         }
         return ( null == packageName ) ? defaultPackageName : packageName;
+    }
+    
+    private static String getImplements(List<Directive> directives) {
+        String impls = null;
+        for ( Directive directive : directives ) {
+            if ( ! "java".equals(directive.getName()) ) continue;
+            for ( Argument arg : directive.getArguments() ) {
+                if ( ! "implements".equals(arg.getName()) ) continue;
+                impls = (String)Scalars.GraphQLString.getCoercing().parseLiteral(arg.getValue());
+                break;
+            }
+            break;
+        }
+        return impls;
     }
 
 }
